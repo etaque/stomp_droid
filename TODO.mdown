@@ -1,0 +1,5 @@
+#TODO
+
+- have client subscribing
+- send messages
+- send message after ack
