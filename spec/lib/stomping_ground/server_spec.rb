@@ -16,24 +16,10 @@ describe StompingGround do
     client.connected?.should be_false 
 
     server_thread.join
-  end
-
-  it "should allow client to disconnect" do
-    pending
-    server_thread = Thread.new do
-      StompingGround::Server.new('127.0.0.1','2000').start
-    end
-
-    client = OnStomp::Client.new("stomp://127.0.0.1:2000")
-    client.connect
-    client.disconnect
-    client.connected?.should be_false
-
     server_thread.terminate
   end
 
   it "should allow client to subscribe" do
-    pending
     server_thread = Thread.new do
       StompingGround::Server.new('127.0.0.1','2000').start
     end
@@ -44,6 +30,7 @@ describe StompingGround do
     end
     client.disconnect
 
+    server_thread.join
     server_thread.terminate
   end
 
