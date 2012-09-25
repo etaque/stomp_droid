@@ -4,7 +4,7 @@ describe StompingGround do
 
   let(:stomp_uri) { 'stomp://127.0.0.1:2000' }
 
-  it "should allow client to connect" do
+  it "should allow client to connect and disconnect" do
     server_thread = Thread.new do
       StompingGround::Server.new('127.0.0.1','2000').start
     end
@@ -13,21 +13,19 @@ describe StompingGround do
     client.connect
     client.connected?.should be_true
     client.disconnect
+    client.connected?.should be_false 
 
-    server_thread.kill
+    server_thread.join
   end
 
   it "should allow client to disconnect" do
-    puts "starting server"
+    pending
     server_thread = Thread.new do
       StompingGround::Server.new('127.0.0.1','2000').start
     end
-    puts "server started"
 
     client = OnStomp::Client.new("stomp://127.0.0.1:2000")
-    puts "client created"
     client.connect
-    puts "client connected"
     client.disconnect
     client.connected?.should be_false
 
@@ -35,6 +33,7 @@ describe StompingGround do
   end
 
   it "should allow client to subscribe" do
+    pending
     server_thread = Thread.new do
       StompingGround::Server.new('127.0.0.1','2000').start
     end
