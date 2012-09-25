@@ -12,8 +12,10 @@ module FakeStomp
       client = server.accept
       frame = client.readline
       puts frame
-      client.write 'CONNECTED'
-      client.write 'version:1.1'
+      client.write "CONNECTED\n"
+      client.write "version:1.1\n"
+      client.write "\n"
+      client.write "\0"
     end
 
   end

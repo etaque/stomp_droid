@@ -11,7 +11,7 @@ describe "Stomp Server" do
 
     client = OnStomp::Client.new("stomp://127.0.0.1:2000")
     client.connect
-    sleep 1
-    client.close
+    client.connected?.should be_true
   end
+
 end
