@@ -1,4 +1,4 @@
-module FakeStomp
+module StompingGround
   
   class Server
 

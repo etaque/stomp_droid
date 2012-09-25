@@ -3,6 +3,7 @@ require 'spec_helper'
 describe "stomp client behaviour" do
 
   it "should send something" do
+    pending
     Thread.new do 
       server = TCPServer.new('127.0.0.1', 2000)
       client = server.accept
