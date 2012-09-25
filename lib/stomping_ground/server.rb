@@ -11,7 +11,6 @@ module StompingGround
       server = TCPServer.new(@host, @port)
       client = server.accept
       frame = client.readline
-      puts frame
       client.write "CONNECTED\n"
       client.write "version:1.1\n"
       client.write "\n"
