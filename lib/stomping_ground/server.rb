@@ -1,9 +1,8 @@
-require 'socket'
-require 'eventmachine'
-
 module StompingGround
 
   module Stomp
+
+    attr_writer :message_body
 
     def post_init
     end
@@ -17,14 +16,16 @@ module StompingGround
         send_data "\n"
         send_data "\0"
        when "SUBSCRIBE"
+         message = @message_body || "hello"
+
          send_data "MESSAGE\n"
          send_data "subscription:#{frame_info[:id]}\n"
          send_data "message-id:007\n"
          send_data "destination:#{frame_info[:destination]}\n"
          send_data "content-type:text/plain\n"
-         send_data "content-length:5\n"
+         send_data "content-length:#{message.length}\n"
          send_data "\n"
-         send_data "hello\0"
+         send_data "#{message}\0"
        when "DISCONNECT"
         send_data "RECEIPT\n"
         send_data "receipt-id:99\n"
@@ -59,9 +60,11 @@ module StompingGround
       @port = port
     end
 
-    def start
+    def start(options={})
       EventMachine.run {
-        EventMachine.start_server @host, @port, StompingGround::Stomp
+        EventMachine.start_server @host, @port, StompingGround::Stomp do |server|
+          server.message_body = options[:message]
+        end
       }
     end
 

@@ -1,3 +1,2 @@
-require "onstomp"
-require "socket"
-require_relative "../lib/stomping_ground"
+require 'onstomp'
+require_relative '../lib/stomping_ground'

@@ -4,18 +4,20 @@ describe StompingGround do
 
   let(:stomp_uri) { 'stomp://127.0.0.1:2000' }
 
-  before :each do
-    @server_thread = Thread.new do
-      StompingGround::Server.new('127.0.0.1','2000').start
-    end
-    @client = OnStomp::Client.new("stomp://127.0.0.1:2000")
-  end
 
-  after :each do
-    @server_thread.terminate
-  end
 
   describe "connection and subscription" do
+
+    before :each do
+      @server_thread = Thread.new do
+        StompingGround::Server.new('127.0.0.1','2000').start
+      end
+      @client = OnStomp::Client.new("stomp://127.0.0.1:2000")
+    end
+
+    after :each do
+      @server_thread.terminate
+    end
 
     it "should allow client to connect and disconnect" do
       @client.connect
@@ -36,6 +38,11 @@ describe StompingGround do
   describe "messages" do
 
     it "should send message when client subscribes" do
+      @server_thread = Thread.new do
+        StompingGround::Server.new('127.0.0.1','2000').start
+      end
+      @client = OnStomp::Client.new("stomp://127.0.0.1:2000")
+
       message_received = false
       @client.connect
       @client.subscribe("/queue/foo") do |message|
@@ -44,7 +51,29 @@ describe StompingGround do
       sleep 0.1 while message_received == false
       message_received.should be_true
       @client.disconnect
+
+      @server_thread.terminate
     end
+
+    it "should send message defined by client" do
+      message_received = false
+
+      expected_msg_body = {:first => 1, :second => 2}.to_json
+      server_thread = Thread.new do
+        StompingGround::Server.new('127.0.0.1','3000').start(:message => expected_msg_body)
+      end
+
+      client = OnStomp::Client.new("stomp://127.0.0.1:3000")
+      client.connect
+      client.subscribe("/queue/foo") do |message|
+        message_received = true if message.body == expected_msg_body
+      end
+
+      sleep 0.1 while message_received == false
+      client.disconnect
+      server_thread.terminate
+    end
+
 
     it "should send multiple messages in sequence" do
       pending
@@ -71,7 +100,6 @@ describe StompingGround do
     end
 
     it "should send number of of messages defined by client"
-    it "should send message defined by client"
 
   end
 
