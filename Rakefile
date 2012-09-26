@@ -16,3 +16,4 @@ begin
 rescue LoadError
     puts '[WARN] rspec not installed - spec tasks disabled'
 end
+
