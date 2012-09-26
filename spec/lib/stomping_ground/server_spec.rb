@@ -29,8 +29,11 @@ describe StompingGround do
     @client.disconnect
   end
 
-  it "should send specified message when client subscribes" do
-    pending
+  it "should send message when client subscribes" do
+    @client.connect
+    @client.subscribe("queue", :ack => 'client') do |message|
+    end
+    @client.disconnect
   end
 
 end
