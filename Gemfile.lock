@@ -1,3 +1,9 @@
+PATH
+  remote: .
+  specs:
+    stomping_ground (0.1)
+      eventmachine
+
 GEM
   remote: http://rubygems.org/
   specs:
@@ -19,8 +25,8 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  eventmachine
   json
   onstomp
   rake
   rspec
+  stomping_ground!
