@@ -24,15 +24,19 @@ describe StompingGround do
 
   it "should allow client to subscribe" do
     @client.connect
-    @client.subscribe("queue", :ack => 'client') do |message|
+    @client.subscribe("/queue/foo", :ack => 'client') do |message|
     end
     @client.disconnect
   end
 
   it "should send message when client subscribes" do
+    message_received = false
     @client.connect
-    @client.subscribe("queue", :ack => 'client') do |message|
+    @client.subscribe("/queue/foo", :ack => 'server') do |message|
+      message_received = true
     end
+    sleep 0.1 while message_received == false
+    message_received.should be_true
     @client.disconnect
   end
 
