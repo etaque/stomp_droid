@@ -15,29 +15,51 @@ describe StompingGround do
     @server_thread.terminate
   end
 
-  it "should allow client to connect and disconnect" do
-    @client.connect
-    @client.connected?.should be_true
-    @client.disconnect
-    @client.connected?.should be_false 
+  describe "connection and subscription" do
+
+    it "should allow client to connect and disconnect" do
+      @client.connect
+      @client.connected?.should be_true
+      @client.disconnect
+      @client.connected?.should be_false 
+    end
+
+    it "should allow client to subscribe" do
+      @client.connect
+      @client.subscribe("/queue/foo", :ack => 'client') do |message|
+      end
+      @client.disconnect
+    end
+
   end
 
-  it "should allow client to subscribe" do
-    @client.connect
-    @client.subscribe("/queue/foo", :ack => 'client') do |message|
-    end
-    @client.disconnect
-  end
+  describe "messages" do
 
-  it "should send message when client subscribes" do
-    message_received = false
-    @client.connect
-    @client.subscribe("/queue/foo", :ack => 'server') do |message|
-      message_received = true
+    it "should send message when client subscribes" do
+      message_received = false
+      @client.connect
+      @client.subscribe("/queue/foo", :ack => 'server') do |message|
+        message_received = true
+      end
+      sleep 0.1 while message_received == false
+      message_received.should be_true
+      @client.disconnect
     end
-    sleep 0.1 while message_received == false
-    message_received.should be_true
-    @client.disconnect
+
+    it "should send multiple messages in sequence" do
+      message_count = 0
+      @client.connect
+      @client.subscribe("/queue/foo") do |message|
+        message_count +=1
+      end
+      sleep 0.1 while message_count < 5
+      @client.disconnect
+    end
+
+    it "should send messages just after client ack if specified"
+    it "should send number of of messages defined by client"
+    it "should send message defined by client"
+
   end
 
 end
