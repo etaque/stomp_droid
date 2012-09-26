@@ -1,7 +1,33 @@
 require 'socket'
+require 'eventmachine'
 
 module StompingGround
-  
+
+  module Stomp
+
+    def post_init
+    end
+
+    def receive_data data
+      command = data.split("\n")[0]
+      if command =~ /^CONNECT/
+        send_data "CONNECTED\n"
+        send_data "version:1.1\n"
+        send_data "\n"
+        send_data "\0"
+      elsif command =~ /DISCONNECT/ 
+        send_data "RECEIPT\n"
+        send_data "receipt-id:99\n"
+        send_data "\0"
+        close_connection
+      end
+    end
+
+    def unbind
+    end
+
+  end
+
   class Server
 
     def initialize(host, port)
@@ -10,31 +36,13 @@ module StompingGround
     end
 
     def start
-      @server = TCPServer.open(@host, @port)
-      client = @server.accept
-      begin
-        loop do
-          start_frame = client.readline
-          while frame = client.readline do
-            break if frame == "\n"
-          end
-
-          if start_frame =~ /^CONNECT/
-            client.write "CONNECTED\n"
-            client.write "version:1.1\n"
-            client.write "\n"
-            client.write "\0"
-          elsif start_frame =~ /DISCONNECT/
-            client.write "RECEIPT\n"
-            client.write "receipt-id:99\n"
-            client.write "\0"
-          end
-        end
-      rescue Exception => e
-        client.close
-      end
+      EventMachine.run {
+        EventMachine.start_server @host, @port, StompingGround::Stomp
+      }
     end
 
   end
 
 end
+
+

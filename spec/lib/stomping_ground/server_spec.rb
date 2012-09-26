@@ -15,7 +15,6 @@ describe StompingGround do
     client.disconnect
     client.connected?.should be_false 
 
-    server_thread.join
     server_thread.terminate
   end
 
@@ -30,7 +29,6 @@ describe StompingGround do
     end
     client.disconnect
 
-    server_thread.join
     server_thread.terminate
   end
 
