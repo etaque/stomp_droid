@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe StompingGround do
 
-  let(:stomp_uri) { 'stomp://127.0.0.1:2000' }
+  let(:stomp_uri) { 'stomp://127.0.0.1:9000' }
 
 
 
@@ -10,9 +10,9 @@ describe StompingGround do
 
     before :each do
       @server_thread = Thread.new do
-        StompingGround::Server.new('127.0.0.1','2000').start
+        StompingGround::Server.new('127.0.0.1','9000').start
       end
-      @client = OnStomp::Client.new("stomp://127.0.0.1:2000")
+      @client = OnStomp::Client.new("stomp://127.0.0.1:9000")
     end
 
     after :each do
@@ -39,9 +39,9 @@ describe StompingGround do
 
     it "should send message when client subscribes" do
       @server_thread = Thread.new do
-        StompingGround::Server.new('127.0.0.1','2000').start
+        StompingGround::Server.new('127.0.0.1','9000').start
       end
-      @client = OnStomp::Client.new("stomp://127.0.0.1:2000")
+      @client = OnStomp::Client.new("stomp://127.0.0.1:9000")
 
       message_received = false
       @client.connect
