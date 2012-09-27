@@ -6,7 +6,7 @@ Fake stomp server to be used when testing stomp consumers. It currently covers j
 
 Here is an example of how stomping ground could be used with rspec an onstomp
 
-    require 'stomping-ground'
+    require 'stomping_ground'
     require 'onstomp'
 
     describe 'consumer' do
