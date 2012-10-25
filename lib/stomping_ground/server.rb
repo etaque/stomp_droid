@@ -10,27 +10,30 @@ module StompingGround
     def receive_data frame
       frame_info = parse(frame)
       case frame_info[:command]
-        when "CONNECT"
+      when "CONNECT"
         send_data "CONNECTED\n"
         send_data "version:1.1\n"
         send_data "\n"
         send_data "\0"
-       when "SUBSCRIBE"
-         message = @message_body || "hello"
-
-         send_data "MESSAGE\n"
-         send_data "subscription:#{frame_info[:id]}\n"
-         send_data "message-id:007\n"
-         send_data "destination:#{frame_info[:destination]}\n"
-         send_data "content-type:text/plain\n"
-         send_data "content-length:#{message.length}\n"
-         send_data "\n"
-         send_data "#{message}\0"
-       when "DISCONNECT"
+      when "SUBSCRIBE"
+        message = @message_body || "hello"
+        send_data "MESSAGE\n"
+        send_data "subscription:#{frame_info[:id]}\n"
+        send_data "message-id:007\n"
+        send_data "destination:#{frame_info[:destination]}\n"
+        send_data "content-type:text/plain\n"
+        send_data "content-length:#{message.length}\n"
+        send_data "\n"
+        send_data "#{message}\0"
+      when "DISCONNECT"
         send_data "RECEIPT\n"
         send_data "receipt-id:99\n"
         send_data "\0"
         close_connection
+      when "SEND"
+        File.open("stomping_ground_message.txt", "w") do |file|
+          file.write(frame)
+        end
       end
     end
 

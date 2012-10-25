@@ -4,8 +4,6 @@ describe StompingGround do
 
   let(:stomp_uri) { 'stomp://127.0.0.1:2000' }
 
-
-
   describe "connection and subscription" do
 
     before :each do
@@ -17,6 +15,7 @@ describe StompingGround do
 
     after :each do
       @server_thread.terminate
+      @server_thread.join
     end
 
     it "should allow client to connect and disconnect" do
@@ -31,6 +30,39 @@ describe StompingGround do
       @client.subscribe("/queue/foo") do |message|
       end
       @client.disconnect
+    end
+
+  end
+
+  describe "publishing" do
+
+    let(:message_filename) { "stomping_ground_message.txt" }
+
+    before :each do
+      File.delete(message_filename)
+    end
+
+    it "should write message to filesystem whenever its received" do
+      @server_thread = Thread.new do
+        StompingGround::Server.new('127.0.0.1','2000').start
+      end
+
+      @client = OnStomp::Client.new("stomp://127.0.0.1:2000")
+      @client.connect
+
+      json_message = {"test" => "testing"}.to_json
+      @client.send("/queue/name", json_message)
+
+      file = nil
+      while file.nil?
+        file = File.read(message_filename) rescue nil
+        sleep 0.1
+      end
+
+      file.should include(json_message)
+
+      @server_thread.terminate
+      @server_thread.join
     end
 
   end
@@ -53,6 +85,7 @@ describe StompingGround do
       @client.disconnect
 
       @server_thread.terminate
+      @server_thread.join
     end
 
     it "should send message defined by client" do
@@ -72,6 +105,7 @@ describe StompingGround do
       sleep 0.1 while message_received == false
       client.disconnect
       server_thread.terminate
+      server_thread.join
     end
 
 
