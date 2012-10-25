@@ -6,6 +6,7 @@ Gem::Specification.new do |s|
   s.version     = StompingGround::VERSION
   s.authors     = ["Francisco Trindade"]
   s.summary     = %q{Mock Stomp server to be used when testing stomp consumers}
+  s.homepage    = "http://github.com/frankmt/stomping_ground"
 
   s.files         = Dir.glob('lib/**/*') 
   s.require_paths = ["lib"]
