@@ -1,10 +1,10 @@
 #Stomping Ground
 
-Fake stomp server to be used when testing stomp consumers. It currently covers just basic functionality, but the roadmap is exciting!
+Fake stomp server to be used when testing stomp consumers and producers. It currently covers just basic functionality, but the roadmap is exciting!
 
 ## Getting Started
 
-Here is an example of how stomping ground could be used with rspec an onstomp
+Here is an example of how stomping ground could be used with rspec and onstomp
 
     require 'stomping_ground'
     require 'onstomp'
@@ -25,12 +25,13 @@ Here is an example of how stomping ground could be used with rspec an onstomp
 
     end
 
-## Roadmap
+## Current Support 
 
 Stomping Ground currently supports the current frames:
 
 * CONNECT
 * DISCONNECT
 * SUBSCRIBE
+* SEND
 
 
