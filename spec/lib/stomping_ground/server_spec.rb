@@ -9,7 +9,6 @@ describe StompingGround do
     @server_thread = Thread.new do
       StompingGround::Server.new(stomp_host, stomp_port).start
     end
-    sleep 1
     @client = OnStomp::Client.new("stomp://#{stomp_host}:#{stomp_port}")
   end
 
@@ -39,6 +38,8 @@ describe StompingGround do
   describe "publishing" do
 
     let(:message_filename) { "stomping_ground_message.txt" }
+    let(:json_message) { {"test" => "testing"}.to_json }
+    let(:queue_name) { "/queue/name" }
 
     before :each do
       File.delete(message_filename) rescue nil
@@ -46,9 +47,7 @@ describe StompingGround do
 
     it "should write message to filesystem whenever its received" do
       @client.connect
-
-      json_message = {"test" => "testing"}.to_json
-      @client.send("/queue/name", json_message)
+      @client.send(queue_name, json_message)
 
       file = nil
       while file.nil?
@@ -57,6 +56,34 @@ describe StompingGround do
       end
 
       file.should include(json_message)
+      file.should include(queue_name)
+    end
+
+    it "should allow filename to be defined on start" do
+      filename = "test_filename.txt"
+      File.delete(filename) rescue nil
+
+      server_thread = Thread.new do
+        StompingGround::Server.new('127.0.0.1','7000').start(
+          :published_message_filename => filename
+        )
+      end
+
+      client = OnStomp::Client.new("stomp://127.0.0.1:7000")
+      client.connect
+      client.send("/queue/name", json_message)
+
+      file = nil
+      while file.nil?
+        file = File.read(filename) rescue nil
+        sleep 0.1
+      end
+
+      file.should include(json_message)
+      
+      client.disconnect
+      server_thread.terminate
+      server_thread.join
     end
 
   end
@@ -89,8 +116,8 @@ describe StompingGround do
       end
 
       sleep 0.1 while message_received == false
+      
       client.disconnect
-
       server_thread.terminate
       server_thread.join
     end

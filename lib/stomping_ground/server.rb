@@ -3,6 +3,7 @@ module StompingGround
   module Stomp
 
     attr_writer :message_body
+    attr_writer :published_message_filename
 
     def post_init
     end
@@ -31,7 +32,8 @@ module StompingGround
         send_data "\0"
         close_connection
       when "SEND"
-        File.open("stomping_ground_message.txt", "w") do |file|
+        filename = @published_message_filename || "stomping_ground_message.txt"
+        File.open(filename, "w") do |file|
           file.write(frame)
         end
       end
@@ -67,6 +69,7 @@ module StompingGround
       EventMachine.run {
         EventMachine.start_server @host, @port, StompingGround::Stomp do |server|
           server.message_body = options[:message]
+          server.published_message_filename = options[:published_message_filename]
         end
       }
     end
