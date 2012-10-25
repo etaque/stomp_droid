@@ -21,7 +21,7 @@ module StompingGround
         File.open("test.txt", "w") do |file|
           file.write(frame_info[:destination])
         end
-        if frame_info[:destination] == @queue_name
+        if @queue_name.nil? || frame_info[:destination] == @queue_name
           message = @message_body || "hello"
           send_data "MESSAGE\n"
           send_data "subscription:#{frame_info[:id]}\n"

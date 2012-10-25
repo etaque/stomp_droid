@@ -109,6 +109,29 @@ describe StompingGround do
       expected_msg_body = {:first => 1, :second => 2}.to_json
       server_thread = Thread.new do
         StompingGround::Server.new('127.0.0.1','3000').start(
+          :message => expected_msg_body
+        )
+      end
+
+      client = OnStomp::Client.new("stomp://127.0.0.1:3000")
+      client.connect
+      client.subscribe("/whatever") do |message|
+        message_received = true if message.body == expected_msg_body
+      end
+
+      sleep 0.1 while message_received == false
+      
+      client.disconnect
+      server_thread.terminate
+      server_thread.join
+    end
+
+    it "should send message if queue is specified and is the correct one" do
+      message_received = false
+
+      expected_msg_body = {:first => 1, :second => 2}.to_json
+      server_thread = Thread.new do
+        StompingGround::Server.new('127.0.0.1','3000').start(
           :message => expected_msg_body,
           :queue_name => "/queue/my_queue"
         )
