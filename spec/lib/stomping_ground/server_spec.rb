@@ -2,21 +2,23 @@ require 'spec_helper'
 
 describe StompingGround do
 
-  let(:stomp_uri) { 'stomp://127.0.0.1:9000' }
+  let(:stomp_host) { '127.0.0.1' }
+  let(:stomp_port) { 8000 }
+
+  before :each do
+    @server_thread = Thread.new do
+      StompingGround::Server.new(stomp_host, stomp_port).start
+    end
+    sleep 1
+    @client = OnStomp::Client.new("stomp://#{stomp_host}:#{stomp_port}")
+  end
+
+  after :each do
+    @server_thread.terminate
+    @server_thread.join
+  end
 
   describe "connection and subscription" do
-
-    before :each do
-      @server_thread = Thread.new do
-        StompingGround::Server.new('127.0.0.1','9000').start
-      end
-      @client = OnStomp::Client.new("stomp://127.0.0.1:9000")
-    end
-
-    after :each do
-      @server_thread.terminate
-      @server_thread.join
-    end
 
     it "should allow client to connect and disconnect" do
       @client.connect
@@ -39,15 +41,10 @@ describe StompingGround do
     let(:message_filename) { "stomping_ground_message.txt" }
 
     before :each do
-      File.delete(message_filename)
+      File.delete(message_filename) rescue nil
     end
 
     it "should write message to filesystem whenever its received" do
-      @server_thread = Thread.new do
-        StompingGround::Server.new('127.0.0.1','2000').start
-      end
-
-      @client = OnStomp::Client.new("stomp://127.0.0.1:2000")
       @client.connect
 
       json_message = {"test" => "testing"}.to_json
@@ -60,9 +57,6 @@ describe StompingGround do
       end
 
       file.should include(json_message)
-
-      @server_thread.terminate
-      @server_thread.join
     end
 
   end
@@ -70,11 +64,6 @@ describe StompingGround do
   describe "messages" do
 
     it "should send message when client subscribes" do
-      @server_thread = Thread.new do
-        StompingGround::Server.new('127.0.0.1','9000').start
-      end
-      @client = OnStomp::Client.new("stomp://127.0.0.1:9000")
-
       message_received = false
       @client.connect
       @client.subscribe("/queue/foo") do |message|
@@ -83,9 +72,6 @@ describe StompingGround do
       sleep 0.1 while message_received == false
       message_received.should be_true
       @client.disconnect
-
-      @server_thread.terminate
-      @server_thread.join
     end
 
     it "should send message defined by client" do
@@ -104,37 +90,10 @@ describe StompingGround do
 
       sleep 0.1 while message_received == false
       client.disconnect
+
       server_thread.terminate
       server_thread.join
     end
 
-
-    it "should send multiple messages in sequence" do
-      pending
-      message_count = 0
-      @client.connect
-      @client.subscribe("/queue/foo") do |message|
-        message_count +=1
-      end
-      sleep 0.1 while message_count < 5
-      @client.disconnect
-    end
-
-    it "should send messages just after client ack if specified" do
-      pending
-      message_count = 0
-      @client.connect
-      @client.subscribe("/queue/foo", :ack => 'client') do |message|
-        message_count +=1
-        client.ack if message_count <= 5
-      end
-      sleep 0.1 while message_count <= 5
-      message_count.should == 5
-      @client.disconnect
-    end
-
-    it "should send number of of messages defined by client"
-
   end
-
 end
