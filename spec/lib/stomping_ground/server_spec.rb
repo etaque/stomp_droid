@@ -7,7 +7,9 @@ describe StompingGround do
 
   before :each do
     @server_thread = Thread.new do
-      StompingGround::Server.new(stomp_host, stomp_port).start
+      StompingGround::Server.new(stomp_host, stomp_port).start(
+        :queue_name => "/queue/foo"
+      )
     end
     @client = OnStomp::Client.new("stomp://#{stomp_host}:#{stomp_port}")
   end
@@ -106,16 +108,45 @@ describe StompingGround do
 
       expected_msg_body = {:first => 1, :second => 2}.to_json
       server_thread = Thread.new do
-        StompingGround::Server.new('127.0.0.1','3000').start(:message => expected_msg_body)
+        StompingGround::Server.new('127.0.0.1','3000').start(
+          :message => expected_msg_body,
+          :queue_name => "/queue/my_queue"
+        )
       end
 
       client = OnStomp::Client.new("stomp://127.0.0.1:3000")
       client.connect
-      client.subscribe("/queue/foo") do |message|
+      client.subscribe("/queue/my_queue") do |message|
         message_received = true if message.body == expected_msg_body
       end
 
       sleep 0.1 while message_received == false
+      
+      client.disconnect
+      server_thread.terminate
+      server_thread.join
+    end
+
+    it "should not send message if client is not subscribed to the correct queue" do
+      message_received = false
+
+      expected_msg_body = {:first => 1, :second => 2}.to_json
+      server_thread = Thread.new do
+        StompingGround::Server.new('127.0.0.1','3000').start(
+          :message => expected_msg_body,
+          :queue_name => "/queue/my_queue"
+        )
+      end
+
+      client = OnStomp::Client.new("stomp://127.0.0.1:3000")
+      client.connect
+      client.subscribe("/queue/wrong_queue") do |message|
+        message_received = true if message.body == expected_msg_body
+      end
+
+      sleep 1
+
+      message_received.should be_false
       
       client.disconnect
       server_thread.terminate
