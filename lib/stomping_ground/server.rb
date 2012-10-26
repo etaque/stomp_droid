@@ -18,9 +18,6 @@ module StompingGround
         send_data "\n"
         send_data "\0"
       when "SUBSCRIBE"
-        File.open("test.txt", "w") do |file|
-          file.write(frame_info[:destination])
-        end
         if @queue_name.nil? || frame_info[:destination] == @queue_name
           message = @message_body || "hello"
           send_data "MESSAGE\n"
