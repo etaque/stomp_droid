@@ -1,4 +1,5 @@
 require 'eventmachine'
+require 'openssl'
 
 module StompingGround
 
@@ -6,7 +7,7 @@ module StompingGround
 
     attr_writer :message_body
     attr_writer :queue_name
-    attr_writer :published_message_filename
+    attr_writer :sent_message_dir
 
     def post_init
     end
@@ -37,9 +38,9 @@ module StompingGround
         send_data "\0"
         close_connection
       when "SEND"
-        filename = @published_message_filename || "stomping_ground_message.txt"
-        File.open(filename, "w") do |file|
-          file.write(frame)
+        filename = sent_message_filename_for(frame)
+        if filename
+          File.open(filename, "w") { |file| file.write(frame) }
         end
       end
     end
@@ -48,6 +49,12 @@ module StompingGround
     end
 
     private
+
+    def sent_message_filename_for(frame)
+      return nil if !@sent_message_dir
+      md5 = OpenSSL::Digest::MD5.new(frame)
+      "#{@sent_message_dir}/#{md5}.msg"
+    end
 
     def parse(frame)
       frame_info = {}
@@ -73,9 +80,9 @@ module StompingGround
     def start(options={})
       EventMachine.run {
         EventMachine.start_server @host, @port, StompingGround::Stomp do |server|
-          server.message_body = options[:message]
-          server.queue_name = options[:queue_name]
-          server.published_message_filename = options[:published_message_filename]
+          server.message_body     = options[:message]
+          server.queue_name       = options[:queue_name]
+          server.sent_message_dir = options[:sent_message_dir]
         end
       }
     end
