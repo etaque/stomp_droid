@@ -15,7 +15,6 @@ describe StompingGround do
   end
 
   before do
-    FileUtils.mkdir_p(message_dir)
     @server_thread = Thread.new do
       StompingGround::Server.new(stomp_host, stomp_port).start(start_ops)
     end

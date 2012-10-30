@@ -1,4 +1,5 @@
 require 'eventmachine'
+require 'fileutils'
 require 'openssl'
 
 module StompingGround
@@ -40,6 +41,8 @@ module StompingGround
       when "SEND"
         filename = sent_message_filename_for(frame)
         if filename
+          dirname = File.dirname(filename)
+          FileUtils.mkdir_p(dirname) if !File.exists?(dirname)
           File.open(filename, "w") { |file| file.write(frame) }
         end
       end
