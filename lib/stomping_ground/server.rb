@@ -10,45 +10,46 @@ module StompingGround
     attr_writer :queue_name
     attr_writer :sent_message_dir
 
-    def post_init
-    end
+    def post_init; end
+    def unbind;    end
 
-    def receive_data frame
-      frame_info = parse(frame)
-      case frame_info[:command]
-      when "CONNECT"
-        send_data "CONNECTED\n"
-        send_data "version:1.1\n"
-        send_data "\n"
-        send_data "\0"
-      when "SUBSCRIBE"
-        if @queue_name.nil? || frame_info[:destination] == @queue_name
-          message = @message_body || "hello"
-          send_data "MESSAGE\n"
-          send_data "subscription:#{frame_info[:id]}\n"
-          send_data "message-id:007\n"
-          send_data "destination:#{frame_info[:destination]}\n"
-          send_data "content-type:text/plain\n"
-          send_data "content-length:#{message.length}\n"
+    def receive_data data
+      append_data(data)
+
+      each_frame do |frame|
+        frame_info = parse(frame)
+        case frame_info[:command]
+        when "CONNECT"
+          send_data "CONNECTED\n"
+          send_data "version:1.1\n"
           send_data "\n"
-          send_data "#{message}\0"
-        end
-      when "DISCONNECT"
-        send_data "RECEIPT\n"
-        send_data "receipt-id:99\n"
-        send_data "\0"
-        close_connection
-      when "SEND"
-        filename = sent_message_filename_for(frame)
-        if filename
-          dirname = File.dirname(filename)
-          FileUtils.mkdir_p(dirname) if !File.exists?(dirname)
-          File.open(filename, "w") { |file| file.write(frame) }
+          send_data "\0"
+        when "SUBSCRIBE"
+          if @queue_name.nil? || frame_info[:destination] == @queue_name
+            message = @message_body || "hello"
+            send_data "MESSAGE\n"
+            send_data "subscription:#{frame_info[:id]}\n"
+            send_data "message-id:007\n"
+            send_data "destination:#{frame_info[:destination]}\n"
+            send_data "content-type:text/plain\n"
+            send_data "content-length:#{message.length}\n"
+            send_data "\n"
+            send_data "#{message}\0"
+          end
+        when "DISCONNECT"
+          send_data "RECEIPT\n"
+          send_data "receipt-id:99\n"
+          send_data "\0"
+          close_connection
+        when "SEND"
+          filename = sent_message_filename_for(frame)
+          if filename
+            dirname = File.dirname(filename)
+            FileUtils.mkdir_p(dirname) if !File.exists?(dirname)
+            File.open(filename, "w") { |file| file.write(frame) }
+          end
         end
       end
-    end
-
-    def unbind
     end
 
     private
@@ -69,6 +70,16 @@ module StompingGround
         end
       end
       frame_info
+    end
+
+    def append_data data
+      (@data ||= '') << data
+    end
+
+    def each_frame(&block)
+      while eoframe = @data.index("\0")
+        block.call(@data.slice!(0, eoframe + 1))
+      end
     end
 
   end
