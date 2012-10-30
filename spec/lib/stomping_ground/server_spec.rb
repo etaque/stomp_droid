@@ -18,6 +18,7 @@ describe StompingGround do
     @server_thread = Thread.new do
       StompingGround::Server.new(stomp_host, stomp_port).start(start_ops)
     end
+    sleep 1 # let @server_thread start
   end
 
   after do
