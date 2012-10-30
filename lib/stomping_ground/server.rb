@@ -1,3 +1,5 @@
+require 'eventmachine'
+
 module StompingGround
 
   module Stomp
