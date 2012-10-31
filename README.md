@@ -2,6 +2,8 @@
 
 Fake stomp server to be used when testing stomp consumers and producers. It currently covers just basic functionality, but the roadmap is exciting!
 
+[![Code Climate](https://codeclimate.com/badge.png)](https://codeclimate.com/github/frankmt/stomping_ground)
+
 ## Getting Started
 
 Here is an example of how stomping ground could be used with rspec and onstomp
