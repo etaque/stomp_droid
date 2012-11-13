@@ -37,9 +37,11 @@ module StompingGround
             send_data "#{message}\0"
           end
         when "DISCONNECT"
-          send_data "RECEIPT\n"
-          send_data "receipt-id:99\n"
-          send_data "\0"
+          if frame_info[:'receipt-id']
+            send_data "RECEIPT\n"
+            send_data "receipt-id:#{frame_info[:'receipt-id']}\n"
+            send_data "\0"
+          end
           close_connection
         when "SEND"
           filename = sent_message_filename_for(frame)
