@@ -62,8 +62,8 @@ module StompingGround
 
     def parse(frame)
       frame_info = {}
-      data_array = frame.split("\n").reverse
-      frame_info[:command] = data_array.pop
+      data_array = frame.split("\n").reject { |line| line =~ /^\s+$/ }
+      frame_info[:command] = data_array.shift
       data_array.each do |info|
         if info.include?(':')
           frame_info[info.split(':')[0].to_sym] = info.split(':')[1]
