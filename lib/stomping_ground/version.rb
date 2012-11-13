@@ -1,5 +1,5 @@
 module StompingGround
   MAJOR=0
-  MINOR=8
+  MINOR=9
   VERSION="#{MAJOR}.#{MINOR}"
 end
