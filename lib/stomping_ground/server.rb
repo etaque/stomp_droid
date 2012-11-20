@@ -22,6 +22,7 @@ module StompingGround
         when "CONNECT"
           send_data "CONNECTED\n"
           send_data "version:1.1\n"
+          send_data "heart-beat:0,0\n" if frame_info[:'heart-beat']
           send_data "\n"
           send_data "\0"
         when "SUBSCRIBE"
