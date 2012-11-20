@@ -5,6 +5,7 @@ Gem::Specification.new do |s|
   s.name        = "stomping_ground"
   s.version     = StompingGround::VERSION
   s.authors     = ["Francisco Trindade", "Geoffrey Giesemann"]
+  s.email       = ["francisco.trindade@rea-group.com", "geoffrey.giesemann@rea-group.com"]
   s.summary     = %q{Mock Stomp server to be used when testing stomp consumers}
   s.homepage    = "http://github.com/frankmt/stomping_ground"
 
