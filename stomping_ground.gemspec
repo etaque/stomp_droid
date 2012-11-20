@@ -4,7 +4,7 @@ require 'stomping_ground/version'
 Gem::Specification.new do |s|
   s.name        = "stomping_ground"
   s.version     = StompingGround::VERSION
-  s.authors     = ["Francisco Trindade"]
+  s.authors     = ["Francisco Trindade", "Geoffrey Giesemann"]
   s.summary     = %q{Mock Stomp server to be used when testing stomp consumers}
   s.homepage    = "http://github.com/frankmt/stomping_ground"
 
