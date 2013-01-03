@@ -45,12 +45,6 @@ describe StompingGround do
   describe "publishing" do
 
     let(:json_message) { {"test" => "testing"}.to_json }
-    #let(:start_opts) do
-      #{
-        #:queue_name       => queue_name,
-        #:sent_message_dir => message_dir
-      #}
-    #end
 
     it "should write message to filesystem whenever its received" do
       client.connect
