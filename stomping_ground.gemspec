@@ -16,7 +16,9 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'rspec'
   s.add_development_dependency 'json'
   s.add_development_dependency 'rake'
+  s.add_development_dependency 'pry'
 
-  s.add_runtime_dependency 'eventmachine'
+  #s.add_runtime_dependency 'eventmachine'
+  s.add_runtime_dependency 'celluloid-io'
 end
 
