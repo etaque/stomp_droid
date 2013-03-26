@@ -1,4 +1,4 @@
-module StompingGround
+module StompDroid
   class Server
     include Celluloid::IO
 

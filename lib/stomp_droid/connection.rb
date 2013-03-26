@@ -1,4 +1,4 @@
-module StompingGround
+module StompDroid
   class Connection
     attr_accessor :server, :socket, :frame, :frame_info
 
@@ -44,6 +44,7 @@ module StompingGround
 
     def subscribe_frame
       if @server.message_body && (@server.queue_name.nil? || frame_info[:destination] == @server.queue_name)
+        message = @server.message_body
         write "MESSAGE\n"
         write "subscription:#{frame_info[:id]}\n"
         write "message-id:007\n"
@@ -51,7 +52,7 @@ module StompingGround
         write "content-type:text/plain\n"
         write "content-length:#{message.length}\n"
         write "\n"
-        write "#{@server.message_body}\0"
+        write "#{message}\0"
       end
     end
 

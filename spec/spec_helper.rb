@@ -1,3 +1,3 @@
 require 'onstomp'
 
-require_relative '../lib/stomping_ground'
+require_relative '../lib/stomp_droid'

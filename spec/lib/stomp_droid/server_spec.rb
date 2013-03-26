@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe StompingGround do
+describe StompDroid do
 
   let(:stomp_host)  { '127.0.0.1' }
   let(:stomp_port)  { 8765 }
@@ -15,7 +15,7 @@ describe StompingGround do
   end
 
   before do
-    @server_thread = StompingGround::Server.start(stomp_host, stomp_port, start_ops)
+    @server_thread = StompDroid::Server.start(stomp_host, stomp_port, start_ops)
     sleep 0.1
   end
 
@@ -82,7 +82,7 @@ describe StompingGround do
 
       expected_msg_body = {:first => 1, :second => 2}.to_json
 
-      server_thread = StompingGround::Server.start('127.0.0.1','3456',
+      server_thread = StompDroid::Server.start('127.0.0.1','3456',
         :message => expected_msg_body
       )
 
@@ -102,7 +102,7 @@ describe StompingGround do
       message_received = false
 
       expected_msg_body = {:first => 1, :second => 2}.to_json
-      server_thread = StompingGround::Server.start('127.0.0.1','3456',
+      server_thread = StompDroid::Server.start('127.0.0.1','3456',
         :message => expected_msg_body,
         :queue_name => "/queue/my_queue"
       )
@@ -123,7 +123,7 @@ describe StompingGround do
       message_received = false
 
       expected_msg_body = {:first => 1, :second => 2}.to_json
-      server_thread = StompingGround::Server.start('127.0.0.1','3456',
+      server_thread = StompDroid::Server.start('127.0.0.1','3456',
         :message => expected_msg_body,
         :queue_name => "/queue/my_queue"
       )

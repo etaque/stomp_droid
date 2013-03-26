@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    stomping_ground-celluloid (0.1)
+    stomp_droid (0.1)
       celluloid-io
 
 GEM
@@ -43,4 +43,4 @@ DEPENDENCIES
   pry
   rake
   rspec
-  stomping_ground-celluloid!
+  stomp_droid!

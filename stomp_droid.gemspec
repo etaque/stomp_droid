@@ -1,13 +1,13 @@
 $LOAD_PATH.push File.expand_path("../lib", __FILE__)
-require 'stomping_ground/version'
+require 'stomp_droid/version'
 
 Gem::Specification.new do |s|
-  s.name        = "stomping_ground-celluloid"
-  s.version     = StompingGround::VERSION
+  s.name        = "stomp_droid"
+  s.version     = StompDroid::VERSION
   s.authors     = ["Francisco Trindade", "Geoffrey Giesemann", "Emilien Taque"]
   s.email       = ["francisco.trindade@rea-group.com", "geoffrey.giesemann@rea-group.com", "e.taque@alphalink.fr"]
-  s.summary     = %q{Mock Stomp server to be used when testing stomp consumers, Celluloid::IO version.}
-  s.homepage    = "http://github.com/etaque/stomping_ground"
+  s.summary     = %q{Mock Stomp server to be used when testing stomp consumers, based on Celluloid::IO}
+  s.homepage    = "http://github.com/etaque/stomp_droid"
 
   s.files         = Dir.glob('lib/**/*')
   s.require_paths = ["lib"]
