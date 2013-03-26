@@ -1,21 +1,19 @@
 PATH
   remote: .
   specs:
-    stomping_ground (0.10)
+    stomping_ground-celluloid (0.1)
       celluloid-io
 
 GEM
   remote: http://rubygems.org/
   specs:
-    celluloid (0.12.4)
-      facter (>= 1.6.12)
+    celluloid (0.13.0)
       timers (>= 1.0.0)
-    celluloid-io (0.12.1)
-      celluloid (~> 0.12.0)
+    celluloid-io (0.13.0)
+      celluloid (>= 0.13.0)
       nio4r (>= 0.4.0)
     coderay (1.0.8)
     diff-lcs (1.1.3)
-    facter (1.6.17)
     json (1.7.5)
     method_source (0.8.1)
     nio4r (0.4.3)
@@ -34,7 +32,7 @@ GEM
       diff-lcs (~> 1.1.3)
     rspec-mocks (2.11.3)
     slop (3.3.3)
-    timers (1.0.2)
+    timers (1.1.0)
 
 PLATFORMS
   ruby
@@ -45,4 +43,4 @@ DEPENDENCIES
   pry
   rake
   rspec
-  stomping_ground!
+  stomping_ground-celluloid!

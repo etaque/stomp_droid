@@ -1,1 +1,1 @@
-rvm use --create 1.9.3@stomp_server
+rvm use --create 1.9.3-p194@stomp_server

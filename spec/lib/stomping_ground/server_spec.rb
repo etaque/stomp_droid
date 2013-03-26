@@ -66,14 +66,14 @@ describe StompingGround do
 
   describe "messages" do
 
-    it "should send message when client subscribes" do
+    it "should not send message when client didn't provide any" do
       message_received = false
       client.connect
       client.subscribe("/queue/foo") do |message|
         message_received = true
       end
-      sleep 0.1 while message_received == false
-      message_received.should be_true
+      sleep 1
+      message_received.should be_false
       client.disconnect
     end
 

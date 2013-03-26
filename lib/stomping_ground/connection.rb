@@ -43,8 +43,7 @@ module StompingGround
     end
 
     def subscribe_frame
-      if @server.queue_name.nil? || frame_info[:destination] == @server.queue_name
-        message = @server.message_body || "hello"
+      if @server.message_body && (@server.queue_name.nil? || frame_info[:destination] == @server.queue_name)
         write "MESSAGE\n"
         write "subscription:#{frame_info[:id]}\n"
         write "message-id:007\n"
@@ -52,7 +51,7 @@ module StompingGround
         write "content-type:text/plain\n"
         write "content-length:#{message.length}\n"
         write "\n"
-        write "#{message}\0"
+        write "#{@server.message_body}\0"
       end
     end
 
